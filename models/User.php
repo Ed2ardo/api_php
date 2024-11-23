@@ -25,8 +25,18 @@ class User
         // Hash the password
         // si se ingresa desde phpMyAdmin nos damos cuenta que no codifica la contraseña.
 
-        if ($stmt->execute()) {
-            return true;
+        try {
+            // Intenta ejecutar la consulta
+            if ($stmt->execute()) {
+                return true;
+            }
+        } catch (PDOException $exception) {
+            // Verifica si el error es de duplicado
+            if ($exception->getCode() == 23000) { // Código SQLSTATE para "duplicate entry"
+                return "duplicate";
+            } else {
+                throw $exception; // Lanza cualquier otro error no relacionado
+            }
         }
         return false;
     }

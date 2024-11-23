@@ -19,8 +19,18 @@ class AuthController
     {
         $this->user->username = $username;
         $this->user->password = $password;
-        return $this->user->register();
+
+        $result = $this->user->register();
+
+        if ($result === true) {
+            echo json_encode(["message" => "Registration successful."]);
+        } elseif ($result === "duplicate") {
+            echo json_encode(["message" => "Username already exists."]);
+        } else {
+            echo json_encode(["message" => "Registration failed."]);
+        }
     }
+
 
     public function login($username, $password)
     {
